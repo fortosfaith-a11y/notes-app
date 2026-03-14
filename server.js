@@ -1,26 +1,39 @@
 const express = require("express")
 const cors = require("cors")
+const fs = require("fs")
 
 const app = express()
 
 app.use(cors())
 app.use(express.json())
 
-let notes = []
+app.use(express.static("public"))
+
+function readNotes() {
+  const data = fs.readFileSync("data/notes.json")
+  return JSON.parse(data)
+}
+
+function saveNotes(notes) {
+  fs.writeFileSync("data/notes.json", JSON.stringify(notes, null, 2))
+}
 
 app.get("/notes", (req, res) => {
+  const notes = readNotes()
   res.json(notes)
 })
 
 app.post("/notes", (req, res) => {
-  const note = req.body.note
-  notes.push(note)
+  const notes = readNotes()
+  notes.push(req.body.note)
+  saveNotes(notes)
   res.json({ message: "Note added" })
 })
 
 app.delete("/notes/:index", (req, res) => {
-  const index = req.params.index
-  notes.splice(index, 1)
+  const notes = readNotes()
+  notes.splice(req.params.index, 1)
+  saveNotes(notes)
   res.json({ message: "Note deleted" })
 })
 
