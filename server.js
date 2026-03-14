@@ -40,6 +40,20 @@ app.delete("/notes/:index", (req, res) => {
   res.json({ message: "Note deleted" })
 })
 
+app.put("/notes/:index", (req, res) => {
+
+  const notes = readNotes()
+
+  const index = req.params.index
+
+  notes[index].text = req.body.text
+
+  saveNotes(notes)
+
+  res.json({ message: "Note updated" })
+
+})
+
 app.listen(3000, () => {
   console.log("Server running on port 3000")
 })

@@ -19,6 +19,29 @@ async function getNotes() {
     li.appendChild(deleteBtn)
     list.appendChild(li)
 
+
+    const editBtn = document.createElement("button")
+    editBtn.textContent = "Edit"
+
+    editBtn.onclick = async () => {
+
+      const newText = prompt("Edit note:", note.text)
+
+      if (!newText) return
+
+      await fetch(`http://localhost:3000/notes/${index}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ text: newText })
+      })
+
+      getNotes()
+    }
+
+    li.appendChild(editBtn)
+
   })
 
 }
