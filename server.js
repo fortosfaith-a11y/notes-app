@@ -25,7 +25,10 @@ app.get("/notes", (req, res) => {
 
 app.post("/notes", (req, res) => {
   const notes = readNotes()
-  notes.push(req.body.note)
+  notes.push({
+    text: req.body.note,
+    createdAt: new Date().toISOString()
+  })
   saveNotes(notes)
   res.json({ message: "Note added" })
 })

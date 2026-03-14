@@ -9,7 +9,7 @@ async function getNotes() {
   notes.forEach((note, index) => {
 
     const li = document.createElement("li")
-    li.textContent = note
+    li.textContent = note.text + " (" + new Date(note.createdAt).toLocaleString() + ")"
 
     const deleteBtn = document.createElement("button")
     deleteBtn.textContent = "Delete"
