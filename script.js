@@ -1,6 +1,7 @@
-let notes = JSON.parse(localStorage.getItem("notes")) || []
+async function getNotes() {
 
-function renderNotes() {
+  const response = await fetch("http://localhost:3000/notes")
+  const notes = await response.json()
 
   const list = document.getElementById("notesList")
   list.innerHTML = ""
@@ -13,9 +14,7 @@ function renderNotes() {
     const deleteBtn = document.createElement("button")
     deleteBtn.textContent = "Delete"
 
-    deleteBtn.onclick = function() {
-      deleteNote(index)
-    }
+    deleteBtn.onclick = () => deleteNote(index)
 
     li.appendChild(deleteBtn)
     list.appendChild(li)
@@ -24,31 +23,35 @@ function renderNotes() {
 
 }
 
-function addNote() {
+async function addNote() {
 
   const input = document.getElementById("noteInput")
   const noteText = input.value
 
   if(noteText === "") return
 
-  notes.push(noteText)
-
-  localStorage.setItem("notes", JSON.stringify(notes))
+  await fetch("http://localhost:3000/notes", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ note: noteText })
+  })
 
   input.value = ""
 
-  renderNotes()
+  getNotes()
 
 }
 
-function deleteNote(index) {
+async function deleteNote(index) {
 
-  notes.splice(index, 1)
+  await fetch(`http://localhost:3000/notes/${index}`, {
+    method: "DELETE"
+  })
 
-  localStorage.setItem("notes", JSON.stringify(notes))
-
-  renderNotes()
+  getNotes()
 
 }
 
-renderNotes()
+getNotes()
